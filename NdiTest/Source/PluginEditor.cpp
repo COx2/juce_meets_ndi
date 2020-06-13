@@ -91,11 +91,18 @@ NdiTestAudioProcessorEditor::NdiTestAudioProcessorEditor (NdiTestAudioProcessor&
 
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (800, 600);
+    setSize (820, 600);
+
+    startTimerHz(30);
 }
 
 NdiTestAudioProcessorEditor::~NdiTestAudioProcessorEditor()
 {
+    if (ndiWrapper.isReceiving())
+    {
+        ndiWrapper.stopReceive();
+        ndiWrapper.disconnect();
+    }
 }
 
 //==============================================================================
@@ -103,6 +110,15 @@ void NdiTestAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+
+    juce::Rectangle<int> video_area{ 80, 100, 640, 480 };
+    g.setColour(juce::Colours::black);
+    g.fillRect(video_area);
+
+    const auto imageToDraw = ndiWrapper.getCurrentVideoFrame().video.image;
+    g.drawImage(imageToDraw,
+        video_area.toFloat(),
+        juce::RectanglePlacement::Flags::centred);
 }
 
 void NdiTestAudioProcessorEditor::resized()
@@ -117,4 +133,9 @@ void NdiTestAudioProcessorEditor::resized()
 
 void NdiTestAudioProcessorEditor::handleMessage(const juce::Message& message)
 {
+}
+
+void NdiTestAudioProcessorEditor::timerCallback()
+{
+    repaint();
 }

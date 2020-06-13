@@ -39,7 +39,15 @@ class NdiWrapper
         {
             while(!threadShouldExit())
             {
-                owner.getFrame();
+                auto frame = owner.getFrame();
+                if(frame.type == NdiFrameType::kVideo)
+                {
+                    owner.setCurrentVideoFrame(frame);
+                }
+                else if (frame.type == NdiFrameType::kAudio)
+                {
+                    owner.setCurrentAudioFrame(frame);
+                }
             }
 
             DBG("Thread exited!!");
@@ -75,16 +83,15 @@ public:
     struct NdiVideoFrame
     {
         int xres, yres;
-        //NDIlib_FourCC_video_type_e FourCC;
         int frame_rate_N, frame_rate_D;
         float picture_aspect_ratio;
-        //NDIlib_frame_format_type_e frame_format_type;
         int64_t timecode;
-        juce::Array<uint8_t> p_data;
         int line_stride_in_bytes;
         int data_size_in_bytes;
         juce::Array<char> p_metadata;
         int64_t timestamp;
+
+        juce::Image image;
     };
 
     struct NdiAudioFrame
@@ -120,10 +127,20 @@ public:
     NdiFrame getFrame();
     int getTimeOutMsec();
 
+    //==============================================================================
+    NdiFrame& getCurrentVideoFrame() { return currentVideoFrame; }
+    void setCurrentVideoFrame(NdiFrame& frame) { currentVideoFrame = frame; }
+
+    NdiFrame& getCurrentAudioFrame() { return currentAudioFrame; }
+    void setCurrentAudioFrame(NdiFrame& frame) { currentAudioFrame = frame; }
+
 private:
     //==============================================================================
     std::unique_ptr<Impl> pImpl;
     std::unique_ptr<FrameUpdater> frameUpdater;
+
+    NdiFrame currentVideoFrame;
+    NdiFrame currentAudioFrame;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NdiWrapper)

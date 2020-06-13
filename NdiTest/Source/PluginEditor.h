@@ -18,6 +18,7 @@
 */
 class NdiTestAudioProcessorEditor  : public juce::AudioProcessorEditor
                                     , public juce::MessageListener
+                                    , public juce::Timer
 {
 public:
     NdiTestAudioProcessorEditor (NdiTestAudioProcessor&);
@@ -30,6 +31,7 @@ public:
 private:
     //==============================================================================
     virtual void handleMessage(const juce::Message& message) override;
+    virtual void timerCallback() override;
 
     //==============================================================================
     NdiTestAudioProcessor& audioProcessor;
