@@ -117,14 +117,4 @@ void NdiTestAudioProcessorEditor::resized()
 
 void NdiTestAudioProcessorEditor::handleMessage(const juce::Message& message)
 {
-    if(dynamic_cast<const NdiSourcesUpdateMessage*>(&message))
-    {
-        ndiSourceList.clear(juce::dontSendNotification);
-        juce::StringArray items;
-        for (auto& source : ndiSources)
-        {
-            items.add(source.NdiName);
-        }
-        ndiSourceList.addItemList(items, 1);
-    }
 }
