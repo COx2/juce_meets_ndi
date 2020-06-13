@@ -9,44 +9,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-class NdiFindJob : public juce::ThreadPoolJob
-{
-public:
-    NdiFindJob(NdiWrapper& ndiWrapper_, juce::Array<NdiWrapper::NdiSource>& ndiSources_, juce::ComboBox & ndiSourceList_)
-        : ThreadPoolJob("NdiFindJob")
-    , ndiWrapper(ndiWrapper_)
-    , ndiSources(ndiSources_)
-    , ndiSourceList(ndiSourceList_)
-    {
-    }
-
-    virtual JobStatus runJob() override
-    {
-        ndiSources = ndiWrapper.find();
-        ndiSourceList.clear(juce::dontSendNotification);
-        juce::StringArray items;
-        for (auto& source : ndiSources)
-        {
-            items.add(source.NdiName);
-        }
-        ndiSourceList.addItemList(items, 1);
-
-        return JobStatus::jobHasFinished;
-    }
-
-private:
-    NdiWrapper& ndiWrapper;
-    juce::Array<NdiWrapper::NdiSource>& ndiSources;
-    juce::ComboBox& ndiSourceList;
-
-    JUCE_LEAK_DETECTOR(NdiFindJob);
-};
-
-class NdiSourcesUpdateMessage : public juce::Message
-{
-};
-
-
 //==============================================================================
 NdiTestAudioProcessorEditor::NdiTestAudioProcessorEditor (NdiTestAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
@@ -57,13 +19,9 @@ NdiTestAudioProcessorEditor::NdiTestAudioProcessorEditor (NdiTestAudioProcessor&
     {
         ndiSourceList.setEnabled(false);
 
-        //threadPool.addJob(new NdiFindJob(ndiWrapper, ndiSources, ndiSourceList), true);
         const std::function<juce::ThreadPoolJob::JobStatus()> findJob = [&]()
         {
             ndiSources = ndiWrapper.find();
-
-            //NdiSourcesUpdateMessage ndi_update_message;
-            //ndi_update_message.post();
 
             const std::function<void()> updateList = [&]()
             {
