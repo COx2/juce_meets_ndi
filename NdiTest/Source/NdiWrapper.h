@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     NdiWrapper.h
@@ -10,6 +10,7 @@
 
 #pragma once
 #include <JuceHeader.h>
+#include "RingBuffer.h"
 
 class NdiWrapper
 {
@@ -46,7 +47,7 @@ class NdiWrapper
                 }
                 else if (frame.type == NdiFrameType::kAudio)
                 {
-                    owner.setCurrentAudioFrame(frame);
+                    owner.audioCache.push(frame.audio.samples);
                 }
             }
 
@@ -57,6 +58,7 @@ class NdiWrapper
         //==============================================================================
         NdiWrapper& owner;
         int interval{ 30 };
+
 
         //==============================================================================
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FrameUpdater)
@@ -92,6 +94,8 @@ public:
         int64_t timestamp;
 
         juce::Image image;
+
+        JUCE_LEAK_DETECTOR(NdiVideoFrame)
     };
 
     struct NdiAudioFrame
@@ -104,6 +108,10 @@ public:
         int channel_stride_in_bytes;
         const char* p_metadata;
         int64_t timestamp;
+
+        juce::AudioBuffer<float> samples;
+
+        JUCE_LEAK_DETECTOR(NdiAudioFrame)
     };
 
     struct NdiFrame
@@ -111,6 +119,8 @@ public:
         NdiFrameType type;
         NdiAudioFrame audio;
         NdiVideoFrame video;
+
+        JUCE_LEAK_DETECTOR(NdiFrame)
     };
 
     //==============================================================================
@@ -134,6 +144,8 @@ public:
     NdiFrame& getCurrentAudioFrame() { return currentAudioFrame; }
     void setCurrentAudioFrame(NdiFrame& frame) { currentAudioFrame = frame; }
 
+    RingBuffer<float> audioCache;
+
 private:
     //==============================================================================
     std::unique_ptr<Impl> pImpl;
@@ -141,6 +153,7 @@ private:
 
     NdiFrame currentVideoFrame;
     NdiFrame currentAudioFrame;
+
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NdiWrapper)

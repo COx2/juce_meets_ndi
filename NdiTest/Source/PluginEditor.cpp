@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     This file contains the basic framework code for a JUCE plugin editor.
@@ -21,7 +21,7 @@ NdiTestAudioProcessorEditor::NdiTestAudioProcessorEditor (NdiTestAudioProcessor&
 
         const std::function<juce::ThreadPoolJob::JobStatus()> findJob = [&]()
         {
-            ndiSources = ndiWrapper.find();
+            ndiSources = audioProcessor.getNdiEngine().find();
 
             const std::function<void()> updateList = [&]()
             {
@@ -58,14 +58,14 @@ NdiTestAudioProcessorEditor::NdiTestAudioProcessorEditor (NdiTestAudioProcessor&
             auto src_idx = ndiSourceList.getSelectedItemIndex();
             const std::function<juce::ThreadPoolJob::JobStatus()> coonectJob = [&, src_idx]()
             {
-                if(ndiWrapper.isReceiving())
+                if(audioProcessor.getNdiEngine().isReceiving())
                 {
-                    ndiWrapper.stopReceive();
-                    ndiWrapper.disconnect();
+                    audioProcessor.getNdiEngine().stopReceive();
+                    audioProcessor.getNdiEngine().disconnect();
                 }
 
-                ndiWrapper.connect(src_idx);
-                ndiWrapper.startReceive();
+                audioProcessor.getNdiEngine().connect(src_idx);
+                audioProcessor.getNdiEngine().startReceive();
 
                 return juce::ThreadPoolJob::JobStatus::jobHasFinished;
             };
@@ -80,8 +80,8 @@ NdiTestAudioProcessorEditor::NdiTestAudioProcessorEditor (NdiTestAudioProcessor&
     {
         const std::function<juce::ThreadPoolJob::JobStatus()> discoonectJob = [&]()
         {
-            ndiWrapper.stopReceive();
-            ndiWrapper.disconnect();
+            audioProcessor.getNdiEngine().stopReceive();
+            audioProcessor.getNdiEngine().disconnect();
 
             return juce::ThreadPoolJob::JobStatus::jobHasFinished;
         };
@@ -93,16 +93,12 @@ NdiTestAudioProcessorEditor::NdiTestAudioProcessorEditor (NdiTestAudioProcessor&
     // editor's size to whatever you need it to be.
     setSize (820, 600);
 
-    startTimerHz(30);
+    startTimerHz(60);
 }
 
 NdiTestAudioProcessorEditor::~NdiTestAudioProcessorEditor()
 {
-    if (ndiWrapper.isReceiving())
-    {
-        ndiWrapper.stopReceive();
-        ndiWrapper.disconnect();
-    }
+
 }
 
 //==============================================================================
@@ -115,7 +111,7 @@ void NdiTestAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour(juce::Colours::black);
     g.fillRect(video_area);
 
-    const auto imageToDraw = ndiWrapper.getCurrentVideoFrame().video.image;
+    const auto imageToDraw = audioProcessor.getNdiEngine().getCurrentVideoFrame().video.image;
     g.drawImage(imageToDraw,
         video_area.toFloat(),
         juce::RectanglePlacement::Flags::centred);

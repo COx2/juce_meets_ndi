@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     This file contains the basic framework code for a JUCE plugin editor.
@@ -10,7 +10,6 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-
 #include "NdiWrapper.h"
 
 //==============================================================================
@@ -36,7 +35,6 @@ private:
     //==============================================================================
     NdiTestAudioProcessor& audioProcessor;
 
-    NdiWrapper ndiWrapper;
     juce::Array<NdiWrapper::NdiSource> ndiSources;
 
     juce::TextButton ndiFindButton;

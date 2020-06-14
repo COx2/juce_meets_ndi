@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="CkqlWX" name="NdiTest" projectType="audioplug" pluginCharacteristicsValue="pluginWantsMidiIn"
-              cppLanguageStandard="17" addUsingNamespaceToJuceHeader="0">
+              cppLanguageStandard="17" addUsingNamespaceToJuceHeader="0" jucerVersion="5.4.7">
   <MAINGROUP id="kTveN1" name="NdiTest">
     <GROUP id="{5DE2ED65-3748-C722-D664-4D7E5CB588CC}" name="Source">
+      <FILE id="fUJiuJ" name="RingBuffer.h" compile="0" resource="0" file="Source/RingBuffer.h"/>
+      <FILE id="a969r4" name="NdiVideoHelper.cpp" compile="1" resource="0"
+            file="Source/NdiVideoHelper.cpp"/>
+      <FILE id="jJePPZ" name="NdiVideoHelper.h" compile="0" resource="0"
+            file="Source/NdiVideoHelper.h"/>
       <FILE id="pnTEDc" name="NdiWrapper.cpp" compile="1" resource="0" file="Source/NdiWrapper.cpp"/>
       <FILE id="uxtdnt" name="NdiWrapper.h" compile="0" resource="0" file="Source/NdiWrapper.h"/>
       <FILE id="a0Eqn0" name="PluginProcessor.cpp" compile="1" resource="0"
