@@ -93,14 +93,14 @@ public:
         for(int ch_idx = 0; ch_idx < audioFrame.samples.getNumChannels(); ++ch_idx)
         {
             juce::FloatVectorOperations::copy(audioFrame.samples.getWritePointer(ch_idx)
-                , (float*)(srcFrame.p_data + ch_idx * audioFrame.channel_stride_in_bytes)
+                , (float*)(srcFrame.p_data) + ch_idx * audioFrame.no_samples
                 , audioFrame.samples.getNumSamples());
         }
     }
 
     NdiWrapper::NdiFrame getFrame()
     {
-        //const juce::ScopedLock frame_lock(lock);
+        const juce::ScopedLock frame_lock(lock);
 
         NdiWrapper::NdiFrame result_frame;
 
@@ -125,7 +125,7 @@ public:
 
             // Audio data
         case NDIlib_frame_type_e::NDIlib_frame_type_audio:
-            DBG("Audio data received (" << audio_frame.no_samples <<" samples).");
+            //DBG("Audio data received (" << audio_frame.no_samples <<" samples).");
             result_frame.type = NdiFrameType::kAudio;
             convertAudioFrame(result_frame.audio, audio_frame);
             NDIlib_recv_free_audio_v2(pNdiReciever, &audio_frame);

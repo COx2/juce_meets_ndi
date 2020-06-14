@@ -98,8 +98,15 @@ void NdiTestAudioProcessor::changeProgramName (int index, const juce::String& ne
 //==============================================================================
 void NdiTestAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    deviceSampleRate = sampleRate;
+    deviceMaxBufferSize = samplesPerBlock;
+
+    for(int i = 0; i < getTotalNumOutputChannels(); ++i)
+    {
+        auto ip = new juce::LagrangeInterpolator();
+        ip->reset();
+        interPolators_ndi_to_device.add(ip);
+    }
 }
 
 void NdiTestAudioProcessor::releaseResources()
@@ -138,11 +145,26 @@ void NdiTestAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
+    if (getNdiEngine().audioCache.isReady())
+    {
+        const auto retrieve_ratio = (double)(getNdiEngine().audioCache.sampleRate) / getSampleRate();
+        juce::AudioBuffer<float> retrieveBuffer(getNdiEngine().audioCache.numChannels, buffer.getNumSamples() * retrieve_ratio);
+        getNdiEngine().audioCache.pop(retrieveBuffer);
 
-    if (getNdiEngine().isReceiving())
-        getNdiEngine().audioCache.pop(buffer);
+        resamplingBuffer_ndi_to_device.reset(new juce::AudioBuffer<float>(buffer.getNumChannels(), buffer.getNumSamples()));
+
+        const float actual_ratio_revert = (float)retrieveBuffer.getNumSamples() / (float)resamplingBuffer_ndi_to_device->getNumSamples();
+
+        for(int ch_idx = 0; ch_idx < totalNumOutputChannels; ++ch_idx)
+        {
+            interPolators_ndi_to_device.getUnchecked(ch_idx)->process(
+                actual_ratio_revert, retrieveBuffer.getReadPointer(ch_idx),
+                resamplingBuffer_ndi_to_device->getWritePointer(ch_idx), resamplingBuffer_ndi_to_device->getNumSamples()
+            );
+        }
+
+        buffer.makeCopyOf((*resamplingBuffer_ndi_to_device.get()), false);
+    }
 }
 
 //==============================================================================

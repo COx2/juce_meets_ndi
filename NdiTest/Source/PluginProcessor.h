@@ -60,6 +60,11 @@ public:
 private:
     NdiWrapper ndiWrapper;
 
+    double deviceSampleRate;
+    int deviceMaxBufferSize;
+    juce::OwnedArray<juce::LagrangeInterpolator> interPolators_ndi_to_device;
+    std::unique_ptr<juce::AudioBuffer<float>> resamplingBuffer_ndi_to_device;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NdiTestAudioProcessor)
 };

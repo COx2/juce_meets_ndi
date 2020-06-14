@@ -48,6 +48,8 @@ class NdiWrapper
                 else if (frame.type == NdiFrameType::kAudio)
                 {
                     owner.audioCache.push(frame.audio.samples);
+                    owner.audioCache.sampleRate = frame.audio.sample_rate;
+                    owner.audioCache.numChannels = frame.audio.no_channels;
                 }
             }
 

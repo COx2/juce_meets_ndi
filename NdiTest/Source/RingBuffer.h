@@ -16,11 +16,12 @@ template <typename SampleType>
 class RingBuffer
 {
 public:
-    static constexpr size_t order = 13;
+    static constexpr size_t order = 24;
     static constexpr size_t bufferSize = 1U << order;
     static constexpr int channelSize = 2;
 
     RingBuffer()
+        : sampleRate(0), numChannels(0)
     {
         internalBuffer.setSize(channelSize, bufferSize);
     }
@@ -86,6 +87,14 @@ public:
 
         abstractFifo.finishedRead(size1 + size2);
     }
+
+    bool isReady() const
+    {
+        return abstractFifo.getNumReady() != 0;
+    }
+
+    int sampleRate;
+    int numChannels;
 
 private:
     juce::AudioBuffer<SampleType> internalBuffer;

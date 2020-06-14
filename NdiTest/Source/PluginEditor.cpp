@@ -107,7 +107,7 @@ void NdiTestAudioProcessorEditor::paint (juce::Graphics& g)
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
-    juce::Rectangle<int> video_area{ 80, 100, 640, 480 };
+    juce::Rectangle<int> video_area{ 20, 100, 780, 480 };
     g.setColour(juce::Colours::black);
     g.fillRect(video_area);
 
