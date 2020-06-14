@@ -198,18 +198,19 @@ public:
 		    {
 			    for (int y_idx = 0; y_idx < srcFrame.yres; ++y_idx)
 			    {
-				    for (int x_idx = 0; x_idx < srcFrame.xres; ++x_idx)
+				    for (int x_idx = 0; x_idx < srcFrame.xres; x_idx+=2)
 				    {
 						const int pix_idx = x_idx + y_idx * srcFrame.xres;
 						const int fourcc_idx = pix_idx * 2;
-						const int a = srcFrame.p_data[fourcc_idx + 0];
-						const int b = srcFrame.p_data[fourcc_idx + 1];
+						const int u0 = srcFrame.p_data[fourcc_idx + 0];
+						const int y0 = srcFrame.p_data[fourcc_idx + 1];
+						const int v0 = srcFrame.p_data[fourcc_idx + 2];
+						const int y1 = srcFrame.p_data[fourcc_idx + 3];
+						juce::Colour col0 = GetColourFromYUV(y0, u0, v0, 255);
+						image.setPixelAt(x_idx, y_idx, col0);
 
-					    const int y = srcFrame.p_data[fourcc_idx + 0];
-					    const int cb = srcFrame.p_data[fourcc_idx + 1] & 0xf0 >> 4;
-					    const int cr = srcFrame.p_data[fourcc_idx + 1] & 0x0f;
-					    juce::Colour col = GetColourFromYCbCr(y, cb, cr, 255);
-					    image.setPixelAt(x_idx, y_idx, col);
+						juce::Colour col1 = GetColourFromYUV(y1, u0, v0, 255);
+						image.setPixelAt(x_idx + 1, y_idx, col1);
 				    }
 			    }
 		    }

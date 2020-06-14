@@ -31,7 +31,7 @@ class NdiWrapper
         ~FrameUpdater()
         {
             // Waiting time duration have to be longer than NDI receiver's time out msec.
-            stopThread(owner.getTimeOutMsec());
+            stopThread(owner.getTimeOutMsec() + 1000);
         }
 
         //==============================================================================
