@@ -149,7 +149,12 @@ void NdiTestAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     {
         const auto retrieve_ratio = (double)(getNdiEngine().audioCache.sampleRate) / getSampleRate();
         juce::AudioBuffer<float> retrieveBuffer(getNdiEngine().audioCache.numChannels, buffer.getNumSamples() * retrieve_ratio);
-        getNdiEngine().audioCache.pop(retrieveBuffer);
+        const int actual_retrieved__num_samples = getNdiEngine().audioCache.pop(retrieveBuffer);
+        // If actual retrieved sample size is less than retrieving buffer size, to reduce the noise with applying gain.
+        if (actual_retrieved__num_samples < retrieveBuffer.getNumSamples())
+        {
+            retrieveBuffer.applyGainRamp(0, actual_retrieved__num_samples, 1.0f, 0.0f);
+        }
 
         resamplingBuffer_ndi_to_device.reset(new juce::AudioBuffer<float>(buffer.getNumChannels(), buffer.getNumSamples()));
 
@@ -165,6 +170,7 @@ void NdiTestAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
         buffer.makeCopyOf((*resamplingBuffer_ndi_to_device.get()), false);
     }
+
 }
 
 //==============================================================================

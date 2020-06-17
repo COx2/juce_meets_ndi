@@ -57,7 +57,7 @@ public:
         abstractFifo.finishedWrite(size1 + size2);
     }
 
-    void pop(juce::AudioBuffer<SampleType>& outputBuffer)
+    int pop(juce::AudioBuffer<SampleType>& outputBuffer)
     {
         int start1, size1, start2, size2;
 
@@ -86,6 +86,8 @@ public:
         }
 
         abstractFifo.finishedRead(size1 + size2);
+
+        return size1 + size2;
     }
 
     bool isReady() const
