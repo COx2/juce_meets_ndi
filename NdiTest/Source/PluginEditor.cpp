@@ -111,14 +111,16 @@ void NdiTestAudioProcessorEditor::paint(juce::Graphics& g)
     g.setColour(juce::Colours::black);
     g.fillRect(video_area);
 
-    if (audioProcessor.getNdiEngine().videoCache.isReady())
+    if(audioProcessor.getNdiEngine().videoCache.pop(currentImage) > 0)
     {
-        audioProcessor.getNdiEngine().videoCache.pop(currentImage);
-
         timeupCounter = 0;
     }
+    else
+    {
+        timeupCounter++;
+    }
 
-    if(timeupCounter > 60)
+    if (timeupCounter > 60)
     {
         currentImage = juce::Image();
     }
@@ -145,5 +147,4 @@ void NdiTestAudioProcessorEditor::handleMessage(const juce::Message& message)
 void NdiTestAudioProcessorEditor::timerCallback()
 {
     repaint();
-    timeupCounter++;
 }

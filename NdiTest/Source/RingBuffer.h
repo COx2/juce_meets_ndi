@@ -137,7 +137,7 @@ public:
         abstractFifo.finishedWrite(size1 + size2);
     }
 
-    void pop(juce::Image& output)
+    int pop(juce::Image& output)
     {
         int start1, size1, start2, size2;
 
@@ -154,6 +154,8 @@ public:
         }
 
         abstractFifo.finishedRead(size1 + size2);
+
+        return size1 + size2;
     }
 
     bool isReady() const
@@ -164,5 +166,4 @@ public:
 private:
     juce::Array<juce::Image> imageBuffer;
     juce::AbstractFifo abstractFifo{ bufferSize };
-
 };
