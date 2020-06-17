@@ -145,15 +145,29 @@ void NdiTestAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
+    const bool will_fade_in_this_frame = isLastRenderedSamplesShorten && getNdiEngine().audioCache.isReady();
+
     if (getNdiEngine().audioCache.isReady())
     {
         const auto retrieve_ratio = (double)(getNdiEngine().audioCache.sampleRate) / getSampleRate();
         juce::AudioBuffer<float> retrieveBuffer(getNdiEngine().audioCache.numChannels, buffer.getNumSamples() * retrieve_ratio);
+        retrieveBuffer.clear(0, retrieveBuffer.getNumSamples());
         const int actual_retrieved__num_samples = getNdiEngine().audioCache.pop(retrieveBuffer);
         // If actual retrieved sample size is less than retrieving buffer size, to reduce the noise with applying gain.
         if (actual_retrieved__num_samples < retrieveBuffer.getNumSamples())
         {
             retrieveBuffer.applyGainRamp(0, actual_retrieved__num_samples, 1.0f, 0.0f);
+            isLastRenderedSamplesShorten = true;
+        }
+        else
+        {
+            isLastRenderedSamplesShorten = false;
+        }
+
+        if (will_fade_in_this_frame)
+        {
+            const int fade_sample_length = juce::jmin(256, juce::jmin(actual_retrieved__num_samples, retrieveBuffer.getNumSamples()));
+            retrieveBuffer.applyGainRamp(0, fade_sample_length, 0.0f, 1.0f);
         }
 
         resamplingBuffer_ndi_to_device.reset(new juce::AudioBuffer<float>(buffer.getNumChannels(), buffer.getNumSamples()));
@@ -170,7 +184,11 @@ void NdiTestAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
         buffer.makeCopyOf((*resamplingBuffer_ndi_to_device.get()), false);
     }
-
+    else
+    {
+        isLastRenderedSamplesShorten = true;
+        buffer.clear(0, buffer.getNumSamples());
+    }
 }
 
 //==============================================================================
