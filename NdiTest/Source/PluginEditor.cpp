@@ -102,17 +102,28 @@ NdiTestAudioProcessorEditor::~NdiTestAudioProcessorEditor()
 }
 
 //==============================================================================
-void NdiTestAudioProcessorEditor::paint (juce::Graphics& g)
+void NdiTestAudioProcessorEditor::paint(juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 
     juce::Rectangle<int> video_area{ 20, 100, 780, 480 };
     g.setColour(juce::Colours::black);
     g.fillRect(video_area);
 
-    const auto imageToDraw = audioProcessor.getNdiEngine().getCurrentVideoFrame().video.image;
-    g.drawImage(imageToDraw,
+    if (audioProcessor.getNdiEngine().videoCache.isReady())
+    {
+        audioProcessor.getNdiEngine().videoCache.pop(currentImage);
+
+        timeupCounter = 0;
+    }
+
+    if(timeupCounter > 60)
+    {
+        currentImage = juce::Image();
+    }
+
+    g.drawImage(currentImage,
         video_area.toFloat(),
         juce::RectanglePlacement::Flags::centred);
 }
@@ -134,4 +145,5 @@ void NdiTestAudioProcessorEditor::handleMessage(const juce::Message& message)
 void NdiTestAudioProcessorEditor::timerCallback()
 {
     repaint();
+    timeupCounter++;
 }

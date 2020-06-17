@@ -44,5 +44,8 @@ private:
 
     juce::ThreadPool threadPool;
 
+    juce::Image currentImage;
+    int timeupCounter {0};
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NdiTestAudioProcessorEditor)
 };

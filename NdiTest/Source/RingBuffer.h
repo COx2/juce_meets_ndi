@@ -13,14 +13,14 @@
 #include <JuceHeader.h>
 
 template <typename SampleType>
-class RingBuffer
+class AudioRingBuffer
 {
 public:
     static constexpr size_t order = 24;
     static constexpr size_t bufferSize = 1U << order;
     static constexpr int channelSize = 2;
 
-    RingBuffer()
+    AudioRingBuffer()
         : sampleRate(0), numChannels(0)
     {
         internalBuffer.setSize(channelSize, bufferSize);
@@ -98,6 +98,69 @@ public:
 
 private:
     juce::AudioBuffer<SampleType> internalBuffer;
+    juce::AbstractFifo abstractFifo{ bufferSize };
+
+};
+
+
+class VideoRingBuffer
+{
+public:
+    static constexpr size_t bufferSize = 5;
+
+    VideoRingBuffer()
+    {
+        for(int i = 0; i < bufferSize; ++i)
+        {
+            imageBuffer.add(juce::Image());
+        }
+    }
+
+    void push(const juce::Image& input)
+    {
+        int start1, size1, start2, size2;
+
+        abstractFifo.prepareToWrite(1, start1, size1, start2, size2);
+
+        if (size1 > 0)
+        {
+            imageBuffer.getReference(start1) = input;
+        }
+
+        if (size2 > 0)
+        {
+            imageBuffer.getReference(start2) = input;
+        }
+
+        abstractFifo.finishedWrite(size1 + size2);
+    }
+
+    void pop(juce::Image& output)
+    {
+        int start1, size1, start2, size2;
+
+        abstractFifo.prepareToRead(1, start1, size1, start2, size2);
+
+        if (size1 > 0)
+        {
+            output = imageBuffer.getReference(start1);
+        }
+
+        if (size2 > 0)
+        {
+            output = imageBuffer.getReference(start2);
+        }
+
+        abstractFifo.finishedRead(size1 + size2);
+    }
+
+    bool isReady() const
+    {
+        return abstractFifo.getNumReady() != 0;
+    }
+
+private:
+    juce::Array<juce::Image> imageBuffer;
     juce::AbstractFifo abstractFifo{ bufferSize };
 
 };

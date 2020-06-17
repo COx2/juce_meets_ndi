@@ -43,7 +43,7 @@ class NdiWrapper
                 auto frame = owner.getFrame();
                 if(frame.type == NdiFrameType::kVideo)
                 {
-                    owner.setCurrentVideoFrame(frame);
+                    owner.videoCache.push(frame.video.image);
                 }
                 else if (frame.type == NdiFrameType::kAudio)
                 {
@@ -140,13 +140,8 @@ public:
     int getTimeOutMsec();
 
     //==============================================================================
-    NdiFrame& getCurrentVideoFrame() { return currentVideoFrame; }
-    void setCurrentVideoFrame(NdiFrame& frame) { currentVideoFrame = frame; }
-
-    NdiFrame& getCurrentAudioFrame() { return currentAudioFrame; }
-    void setCurrentAudioFrame(NdiFrame& frame) { currentAudioFrame = frame; }
-
-    RingBuffer<float> audioCache;
+    AudioRingBuffer<float> audioCache;
+    VideoRingBuffer videoCache;
 
 private:
     //==============================================================================
