@@ -30,18 +30,18 @@
                        headerPath="C:\Program Files\NewTek\NDI 4 SDK\Include"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_audio_basics" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_core" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_data_structures" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_events" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_graphics" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_core" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_extra" path="..\Dependencies\JUCE\modules"/>
       </MODULEPATHS>
     </VS2019>
     <XCODE_MAC targetFolder="Builds/MacOSX">
@@ -50,18 +50,18 @@
         <CONFIGURATION isDebug="0" name="Release" targetName="NdiTest"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_audio_basics" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_core" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_data_structures" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_events" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_graphics" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="C:/SDKs/juce-framework/JUCE_6preview/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_core" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_extra" path="..\Dependencies\JUCE\modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
