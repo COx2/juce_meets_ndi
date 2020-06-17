@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="nQw8Vl" name="NdiReceiver" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" companyName="Shoegaze Systems"
+              companyCopyright="Shoegaze Systems" companyWebsite="http://shoegaze-systems.com/"
+              pluginFormats="buildAU,buildStandalone,buildVST3" pluginCharacteristicsValue="pluginWantsMidiIn">
+  <MAINGROUP id="cK2Iy5" name="NdiReceiver">
+    <GROUP id="{F7850812-7196-5473-9124-D547974DB718}" name="Source">
+      <FILE id="s9x4ca" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="oYqruV" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="MRUf4V" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="mVGAuB" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="hHvxq5" name="NdiAudioHelper.h" compile="0" resource="0"
+            file="Source/NdiAudioHelper.h"/>
+      <FILE id="SQqJjK" name="NdiVideoHelper.h" compile="0" resource="0"
+            file="Source/NdiVideoHelper.h"/>
+      <FILE id="mhfY5m" name="NdiWrapper.cpp" compile="1" resource="0" file="Source/NdiWrapper.cpp"/>
+      <FILE id="XAoTWZ" name="NdiWrapper.h" compile="0" resource="0" file="Source/NdiWrapper.h"/>
+      <FILE id="Y9EB1E" name="RingBuffer.h" compile="0" resource="0" file="Source/RingBuffer.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <VS2019 targetFolder="Builds/VisualStudio2019" externalLibraries="Processing.NDI.Lib.x64.lib">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NdiReceiver" headerPath="C:\Program Files\NewTek\NDI 4 SDK\Include"
+                       libraryPath="C:\Program Files\NewTek\NDI 4 SDK\Lib\x64"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NdiReceiver" headerPath="C:\Program Files\NewTek\NDI 4 SDK\Include"
+                       libraryPath="C:\Program Files\NewTek\NDI 4 SDK\Lib\x64"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_core" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_data_structures" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_events" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_graphics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+      </MODULEPATHS>
+    </VS2019>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NdiReceiver"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NdiReceiver"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_core" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_data_structures" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_events" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_graphics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>
