@@ -12,12 +12,12 @@
 
 #include <JuceHeader.h>
 #include <Processing.NDI.Lib.h>
-#include "NdiWrapper.h"
+#include "NdiSendWrapper.h"
 
 class NdiAudioHelper
 {
 public:
-    static void convertAudioFrame(NdiWrapper::NdiAudioFrame& audioFrame, NDIlib_audio_frame_v2_t& srcFrame)
+    static void convertAudioFrame(NdiSendWrapper::NdiAudioFrame& audioFrame, NDIlib_audio_frame_v2_t& srcFrame)
     {
         audioFrame.sample_rate = srcFrame.sample_rate;
         audioFrame.no_channels = srcFrame.no_channels;

@@ -12,7 +12,7 @@
 
 #include <JuceHeader.h>
 #include <Processing.NDI.Lib.h>
-#include "NdiWrapper.h"
+#include "NdiSendWrapper.h"
 
 class NdiVideoHelper
 {
@@ -68,7 +68,7 @@ public:
         return juce::Colour::fromRGBA(r, g, b, a);
     }
 
-    static void convertVideoFrame(NdiWrapper::NdiVideoFrame& videoFrame, NDIlib_video_frame_v2_t& srcFrame)
+    static void convertVideoFrame(NdiSendWrapper::NdiVideoFrame& videoFrame, NDIlib_video_frame_v2_t& srcFrame)
     {
         videoFrame.xres = srcFrame.xres;
         videoFrame.yres = srcFrame.yres;

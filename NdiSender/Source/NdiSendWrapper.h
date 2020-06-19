@@ -12,7 +12,7 @@
 #include <JuceHeader.h>
 #include "RingBuffer.h"
 
-class NdiWrapper
+class NdiSendWrapper
 {
     //==============================================================================
     class Impl;
@@ -22,10 +22,12 @@ class NdiWrapper
     {
     public:
         //==============================================================================
-        FrameUpdater(NdiWrapper& owner_)
+        FrameUpdater(NdiSendWrapper& owner_)
             : juce::Thread("NDI Frame Update Thread")
             , owner(owner_)
         {
+            retrieveBuffer.setSize(channel_size, sample_size);
+
             startThread();
         }
 
@@ -40,16 +42,33 @@ class NdiWrapper
         {
             while(!threadShouldExit())
             {
-                auto frame = owner.getFrame();
-                if(frame.type == NdiFrameType::kVideo)
+                // Send audio...
+                if(owner.audioCache.isReady())
                 {
-                    owner.videoCache.push(frame.video.image);
+                    retrieveBuffer.clear();
+                    const int actual_sample_size = owner.audioCache.pop(retrieveBuffer);
+
+                    NdiFrame frame;
+                    frame.type = NdiFrameType::kAudio;
+                    frame.audio.sample_rate = owner.audioCache.sampleRate;
+                    frame.audio.no_channels = owner.audioCache.numChannels;
+                    frame.audio.no_samples = actual_sample_size;
+                    frame.audio.p_data = NULL;
+                    frame.audio.p_metadata = NULL;
+
+                    frame.audio.samples = retrieveBuffer;
+
+                    owner.sendFrame(frame);
                 }
-                else if (frame.type == NdiFrameType::kAudio)
+                
+                // Send video...
+                if (owner.videoCache.isReady())
                 {
-                    owner.audioCache.push(frame.audio.samples);
-                    owner.audioCache.sampleRate = frame.audio.sample_rate;
-                    owner.audioCache.numChannels = frame.audio.no_channels;
+
+                    NdiFrame frame;
+                    frame.type = NdiFrameType::kVideo;
+
+                    owner.sendFrame(frame);
                 }
             }
 
@@ -58,9 +77,12 @@ class NdiWrapper
 
     private:
         //==============================================================================
-        NdiWrapper& owner;
+        NdiSendWrapper& owner;
         int interval{ 30 };
 
+        const int channel_size = 16;
+        const int sample_size = 1U << 11;
+        juce::AudioBuffer<float> retrieveBuffer;
 
         //==============================================================================
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FrameUpdater)
@@ -126,17 +148,14 @@ public:
     };
 
     //==============================================================================
-    NdiWrapper();
-    ~NdiWrapper();
+    NdiSendWrapper();
+    ~NdiSendWrapper();
 
     //==============================================================================
-    juce::Array<NdiSource> find() const;
-    void connect(int sourceIndex);
-    void disconnect();
-    void startReceive();
-    void stopReceive();
-    bool isReceiving() const;
-    NdiFrame getFrame();
+    void startSend();
+    void stopSend();
+    bool isSending() const;
+    void sendFrame(NdiFrame& frame) const;
     int getTimeOutMsec();
 
     //==============================================================================
@@ -148,10 +167,6 @@ private:
     std::unique_ptr<Impl> pImpl;
     std::unique_ptr<FrameUpdater> frameUpdater;
 
-    NdiFrame currentVideoFrame;
-    NdiFrame currentAudioFrame;
-
-
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NdiWrapper)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NdiSendWrapper)
 };

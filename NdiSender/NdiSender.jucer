@@ -11,8 +11,10 @@
             file="Source/NdiAudioHelper.h"/>
       <FILE id="C8upMP" name="NdiVideoHelper.h" compile="0" resource="0"
             file="Source/NdiVideoHelper.h"/>
-      <FILE id="ErmZwW" name="NdiWrapper.cpp" compile="1" resource="0" file="Source/NdiWrapper.cpp"/>
-      <FILE id="QBpVmA" name="NdiWrapper.h" compile="0" resource="0" file="Source/NdiWrapper.h"/>
+      <FILE id="ErmZwW" name="NdiSendWrapper.cpp" compile="1" resource="0"
+            file="Source/NdiSendWrapper.cpp"/>
+      <FILE id="QBpVmA" name="NdiSendWrapper.h" compile="0" resource="0"
+            file="Source/NdiSendWrapper.h"/>
       <FILE id="XUht4o" name="RingBuffer.h" compile="0" resource="0" file="Source/RingBuffer.h"/>
       <FILE id="zdEQz2" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>

@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "NdiSendWrapper.h"
 
 //==============================================================================
 /**
@@ -53,7 +54,13 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    //==============================================================================
+    NdiSendWrapper& getNdiEngine() { return ndiWrapper; }
+
 private:
+    //==============================================================================
+    NdiSendWrapper ndiWrapper;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NdiSenderAudioProcessor)
 };

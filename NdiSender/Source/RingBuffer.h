@@ -95,6 +95,12 @@ public:
         return abstractFifo.getNumReady() != 0;
     }
 
+    void reset()
+    {
+        internalBuffer.setSize(numChannels, bufferSize);
+        internalBuffer.clear();
+    }
+
     int sampleRate;
     int numChannels;
 
