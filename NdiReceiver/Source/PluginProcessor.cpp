@@ -101,11 +101,12 @@ void NdiReceiverAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     deviceSampleRate = sampleRate;
     deviceMaxBufferSize = samplesPerBlock;
 
+    interPolators_NdiToDevice.clear();
     for (int i = 0; i < getTotalNumOutputChannels(); ++i)
     {
         auto ip = new juce::LagrangeInterpolator();
         ip->reset();
-        interPolators_ndi_to_device.add(ip);
+        interPolators_NdiToDevice.add(ip);
     }
 }
 
@@ -147,14 +148,18 @@ void NdiReceiverAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     if (getNdiEngine().audioCache.isReady())
     {
+        resamplingBuffer_NdiToDevice.reset(new juce::AudioBuffer<float>(buffer.getNumChannels(), buffer.getNumSamples()));
+
         const auto retrieve_ratio = (double)(getNdiEngine().audioCache.sampleRate) / getSampleRate();
-        juce::AudioBuffer<float> retrieveBuffer(getNdiEngine().audioCache.numChannels, buffer.getNumSamples() * retrieve_ratio);
-        retrieveBuffer.clear(0, retrieveBuffer.getNumSamples());
-        const int actual_retrieved__num_samples = getNdiEngine().audioCache.pop(retrieveBuffer);
+        juce::AudioBuffer<float> retrieve_buffer(getNdiEngine().audioCache.numChannels, buffer.getNumSamples() * retrieve_ratio);
+        retrieve_buffer.clear(0, retrieve_buffer.getNumSamples());
+        const int actual_retrieved_num_samples = getNdiEngine().audioCache.pop(retrieve_buffer);
+
+        // Apply fade out...
         // If actual retrieved sample size is less than retrieving buffer size, to reduce the noise with applying gain.
-        if (actual_retrieved__num_samples < retrieveBuffer.getNumSamples())
+        if (actual_retrieved_num_samples < retrieve_buffer.getNumSamples())
         {
-            retrieveBuffer.applyGainRamp(0, actual_retrieved__num_samples, 1.0f, 0.0f);
+            retrieve_buffer.applyGainRamp(0, actual_retrieved_num_samples, 1.0f, 0.0f);
             isLastRenderedSamplesShorten = true;
         }
         else
@@ -162,25 +167,42 @@ void NdiReceiverAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
             isLastRenderedSamplesShorten = false;
         }
 
+        // Apply fade in...
         if (will_fade_in_this_frame)
         {
-            const int fade_sample_length = juce::jmin(256, juce::jmin(actual_retrieved__num_samples, retrieveBuffer.getNumSamples()));
-            retrieveBuffer.applyGainRamp(0, fade_sample_length, 0.0f, 1.0f);
+            const int fade_sample_length = juce::jmin(256, juce::jmin(actual_retrieved_num_samples, retrieve_buffer.getNumSamples()));
+            retrieve_buffer.applyGainRamp(0, fade_sample_length, 0.0f, 1.0f);
         }
 
-        resamplingBuffer_ndi_to_device.reset(new juce::AudioBuffer<float>(buffer.getNumChannels(), buffer.getNumSamples()));
+        // Processing with re-sample...
+        const float actual_ratio_revert = (float)retrieve_buffer.getNumSamples() / (float)resamplingBuffer_NdiToDevice->getNumSamples();
 
-        const float actual_ratio_revert = (float)retrieveBuffer.getNumSamples() / (float)resamplingBuffer_ndi_to_device->getNumSamples();
-
-        for (int ch_idx = 0; ch_idx < totalNumOutputChannels; ++ch_idx)
+        for (int ch_idx = 0; ch_idx < interPolators_NdiToDevice.size(); ++ch_idx)
         {
-            interPolators_ndi_to_device.getUnchecked(ch_idx)->process(
-                actual_ratio_revert, retrieveBuffer.getReadPointer(ch_idx),
-                resamplingBuffer_ndi_to_device->getWritePointer(ch_idx), resamplingBuffer_ndi_to_device->getNumSamples()
-            );
+            if(ch_idx < retrieve_buffer.getNumChannels())
+            {
+                interPolators_NdiToDevice.getUnchecked(ch_idx)->process(
+                    actual_ratio_revert, retrieve_buffer.getReadPointer(ch_idx),
+                    resamplingBuffer_NdiToDevice->getWritePointer(ch_idx), resamplingBuffer_NdiToDevice->getNumSamples()
+                );
+            }
+            else
+            {
+                juce::AudioBuffer<float> dummy_buffer(1, retrieve_buffer.getNumSamples());
+                dummy_buffer.clear();
+                interPolators_NdiToDevice.getUnchecked(ch_idx)->process(
+                    actual_ratio_revert, dummy_buffer.getReadPointer(0),
+                    resamplingBuffer_NdiToDevice->getWritePointer(ch_idx), resamplingBuffer_NdiToDevice->getNumSamples()
+                );
+            }
         }
 
-        buffer.makeCopyOf((*resamplingBuffer_ndi_to_device.get()), false);
+        // Copy buffer...
+        for(int ch_idx = 0; ch_idx < juce::jmin(buffer.getNumChannels(), resamplingBuffer_NdiToDevice->getNumChannels()); ++ch_idx)
+        {
+            jassert(buffer.getNumSamples() == resamplingBuffer_NdiToDevice->getNumSamples());
+            juce::FloatVectorOperations::copy(buffer.getWritePointer(ch_idx), resamplingBuffer_NdiToDevice->getReadPointer(ch_idx), buffer.getNumSamples());
+        }
     }
     else
     {

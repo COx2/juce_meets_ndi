@@ -28,14 +28,14 @@ public:
         if (!pNdiFinder) return;
 
         // We now have at least one source, so we create a receiver to look at it.
-        pNdiReciever = NDIlib_recv_create_v3();
-        if (!pNdiReciever) return;
+        pNdiReceiver = NDIlib_recv_create_v3();
+        if (!pNdiReceiver) return;
     }
 
     ~Impl()
     {
         // Destroy the receiver
-        NDIlib_recv_destroy(pNdiReciever);
+        NDIlib_recv_destroy(pNdiReceiver);
 
         // Destroy the NDI finder. We needed to have access to the pointers to p_sources[0]
         NDIlib_find_destroy(pNdiFinder);
@@ -72,13 +72,13 @@ public:
     void connect(int sourceIndex) const
     {
         // Connect to our sources
-        NDIlib_recv_connect(pNdiReciever, pNdiSources + sourceIndex);
+        NDIlib_recv_connect(pNdiReceiver, pNdiSources + sourceIndex);
     }
 
     void disconnect() const
     {
         // Disconnect with NULL source
-        NDIlib_recv_connect(pNdiReciever, NULL);
+        NDIlib_recv_connect(pNdiReceiver, NULL);
     }
 
     NdiWrapper::NdiFrame getFrame()
@@ -91,7 +91,7 @@ public:
         NDIlib_video_frame_v2_t video_frame;
         NDIlib_audio_frame_v2_t audio_frame;
 
-        switch (NDIlib_recv_capture_v2(pNdiReciever, &video_frame, &audio_frame, nullptr, timeOutMsec))
+        switch (NDIlib_recv_capture_v2(pNdiReceiver, &video_frame, &audio_frame, nullptr, timeOutMsec))
         {   // No data
         case NDIlib_frame_type_e::NDIlib_frame_type_none:
             //DBG("No data received.");
@@ -103,7 +103,7 @@ public:
             //DBG("Video data received (" << video_frame.xres << "x" << video_frame.yres <<" ).");
             result_frame.type = NdiFrameType::kVideo;
             NdiVideoHelper::convertVideoFrame(result_frame.video, video_frame);
-            NDIlib_recv_free_video_v2(pNdiReciever, &video_frame);
+            NDIlib_recv_free_video_v2(pNdiReceiver, &video_frame);
             break;
 
             // Audio data
@@ -111,7 +111,7 @@ public:
             //DBG("Audio data received (" << audio_frame.no_samples <<" samples).");
             result_frame.type = NdiFrameType::kAudio;
             NdiAudioHelper::convertAudioFrame(result_frame.audio, audio_frame);
-            NDIlib_recv_free_audio_v2(pNdiReciever, &audio_frame);
+            NDIlib_recv_free_audio_v2(pNdiReceiver, &audio_frame);
             break;
 
         case NDIlib_frame_type_e::NDIlib_frame_type_error:
@@ -131,7 +131,7 @@ public:
 
 private:
     NDIlib_find_instance_t pNdiFinder;
-    NDIlib_recv_instance_t pNdiReciever;
+    NDIlib_recv_instance_t pNdiReceiver;
     const NDIlib_source_t* pNdiSources;
 
     juce::CriticalSection lock;

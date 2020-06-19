@@ -63,8 +63,8 @@ private:
 
     double deviceSampleRate;
     int deviceMaxBufferSize;
-    juce::OwnedArray<juce::LagrangeInterpolator> interPolators_ndi_to_device;
-    std::unique_ptr<juce::AudioBuffer<float>> resamplingBuffer_ndi_to_device;
+    juce::OwnedArray<juce::LagrangeInterpolator> interPolators_NdiToDevice;
+    std::unique_ptr<juce::AudioBuffer<float>> resamplingBuffer_NdiToDevice;
 
     bool isLastRenderedSamplesShorten{ true };
 
