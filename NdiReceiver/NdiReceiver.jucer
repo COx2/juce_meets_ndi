@@ -3,7 +3,8 @@
 <JUCERPROJECT id="nQw8Vl" name="NdiReceiver" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" companyName="Shoegaze Systems"
               companyCopyright="Shoegaze Systems" companyWebsite="http://shoegaze-systems.com/"
-              pluginFormats="buildAU,buildStandalone,buildVST3" pluginCharacteristicsValue="pluginWantsMidiIn">
+              pluginFormats="buildAU,buildStandalone,buildVST3" pluginCharacteristicsValue="pluginWantsMidiIn"
+              jucerVersion="5.4.7">
   <MAINGROUP id="cK2Iy5" name="NdiReceiver">
     <GROUP id="{F7850812-7196-5473-9124-D547974DB718}" name="Source">
       <FILE id="s9x4ca" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -26,10 +27,10 @@
   <EXPORTFORMATS>
     <VS2019 targetFolder="Builds/VisualStudio2019" externalLibraries="Processing.NDI.Lib.x64.lib">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NdiReceiver" headerPath="C:\Program Files\NewTek\NDI 4 SDK\Include"
-                       libraryPath="C:\Program Files\NewTek\NDI 4 SDK\Lib\x64"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NdiReceiver" headerPath="C:\Program Files\NewTek\NDI 4 SDK\Include"
-                       libraryPath="C:\Program Files\NewTek\NDI 4 SDK\Lib\x64"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NdiReceiver" headerPath="$(NDI_SDK_DIR)\Include"
+                       libraryPath="$(NDI_SDK_DIR)\Lib\x64"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NdiReceiver" headerPath="$(NDI_SDK_DIR)\Include"
+                       libraryPath="$(NDI_SDK_DIR)\Lib\x64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
