@@ -90,7 +90,7 @@ NdiReceiverAudioProcessorEditor::NdiReceiverAudioProcessorEditor (NdiReceiverAud
 
     setSize(820, 600);
 
-    startTimerHz(60);
+    startTimerHz(120);
 }
 
 NdiReceiverAudioProcessorEditor::~NdiReceiverAudioProcessorEditor()

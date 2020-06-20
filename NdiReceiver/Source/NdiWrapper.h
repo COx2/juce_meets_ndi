@@ -26,7 +26,7 @@ class NdiWrapper
             : juce::Thread("NDI Frame Update Thread")
             , owner(owner_)
         {
-            startThread();
+            startThread(10);
         }
 
         ~FrameUpdater()
