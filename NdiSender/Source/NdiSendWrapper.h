@@ -28,7 +28,7 @@ class NdiSendWrapper
         {
             retrieveBuffer.setSize(channel_size, sample_size);
 
-            startThread();
+            startThread(10);
         }
 
         ~FrameUpdater()
@@ -58,15 +58,32 @@ class NdiSendWrapper
 
                     frame.audio.samples = retrieveBuffer;
 
+                    frame.audio.timecode = 0;
+                    frame.audio.timestamp = 0;
+
                     owner.sendFrame(frame);
                 }
                 
                 // Send video...
                 if (owner.videoCache.isReady())
                 {
+                    retrieveImage.clear({0, 0, 0, 0});
+                    const int actual_image_size = owner.videoCache.pop(retrieveImage);
 
                     NdiFrame frame;
                     frame.type = NdiFrameType::kVideo;
+
+                    frame.video.xres = retrieveImage.getWidth();
+                    frame.video.yres = retrieveImage.getHeight();
+                    frame.video.image = retrieveImage;
+
+                    frame.video.frame_rate_N = 30000;
+                    frame.video.frame_rate_D = 1001;
+
+                    frame.video.timecode;
+                    frame.video.timestamp;
+
+                    frame.video.p_metadata = NULL;
 
                     owner.sendFrame(frame);
                 }
@@ -83,6 +100,7 @@ class NdiSendWrapper
         const int channel_size = 16;
         const int sample_size = 1U << 11;
         juce::AudioBuffer<float> retrieveBuffer;
+        juce::Image retrieveImage;
 
         //==============================================================================
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FrameUpdater)
@@ -110,11 +128,8 @@ public:
     {
         int xres, yres;
         int frame_rate_N, frame_rate_D;
-        float picture_aspect_ratio;
+        const char* p_metadata;
         int64_t timecode;
-        int line_stride_in_bytes;
-        int data_size_in_bytes;
-        juce::Array<char> p_metadata;
         int64_t timestamp;
 
         juce::Image image;
@@ -127,10 +142,10 @@ public:
         int sample_rate;
         int no_channels;
         int no_samples;
-        int64_t timecode;
-        float* p_data;
         int channel_stride_in_bytes;
+        float* p_data;
         const char* p_metadata;
+        int64_t timecode;
         int64_t timestamp;
 
         juce::AudioBuffer<float> samples;

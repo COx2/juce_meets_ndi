@@ -14,7 +14,8 @@
 //==============================================================================
 /**
 */
-class NdiSenderAudioProcessorEditor  : public juce::AudioProcessorEditor
+class NdiSenderAudioProcessorEditor : public juce::AudioProcessorEditor
+                                    , juce::Timer
 {
 public:
     NdiSenderAudioProcessorEditor (NdiSenderAudioProcessor&);
@@ -24,10 +25,27 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
+    //==============================================================================
+    virtual void timerCallback() override;
+
+    //==============================================================================
+    void updateCameraList();
+    void cameraChanged();
+    void cameraDeviceOpenResult(juce::CameraDevice* device, const String& error);
+    void takeSnapshot();
+    // This is called by the camera device when a new image arrives
+    void imageReceived(const Image& image);
+
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
+    //==============================================================================
     NdiSenderAudioProcessor& audioProcessor;
+
+    std::unique_ptr<juce::CameraDevice> cameraDevice;
+    std::unique_ptr<juce::Component> cameraPreviewComp;
+
+    juce::ComboBox cameraSelectorComboBox{ "Camera" };
+    juce::TextButton snapshotButton{ "Take a snapshot" };
+    juce::Label ndiName;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NdiSenderAudioProcessorEditor)
 };

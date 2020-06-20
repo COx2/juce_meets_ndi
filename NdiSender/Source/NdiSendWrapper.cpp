@@ -52,14 +52,11 @@ public:
             // Video data
         case NdiSendWrapper::NdiFrameType::kVideo:
             {
-                // We are going to create a 1920x1080 interlaced frame at 29.97Hz.
+                // Create an video buffer
                 NDIlib_video_frame_v2_t NDI_video_frame;
-                NDI_video_frame.xres = 1920;
-                NDI_video_frame.yres = 1080;
-                NDI_video_frame.FourCC = NDIlib_FourCC_type_UYVY;
-                NDI_video_frame.p_data = (uint8_t*)malloc(1920 * 1080 * 2);
-                NDI_video_frame.line_stride_in_bytes = 1920 * 2;
+                NdiVideoHelper::convertVideoFrame(NDI_video_frame, frame.video);
 
+                // Send data
                 NDIlib_send_send_video_v2(pNdiSender, &NDI_video_frame);
 
                 // Free the data
@@ -72,23 +69,9 @@ public:
             {
                 // Create an audio buffer
                 NDIlib_audio_frame_v2_t NDI_audio_frame;
-                NDI_audio_frame.sample_rate = frame.audio.sample_rate;
-                NDI_audio_frame.no_channels = frame.audio.no_channels;
-                NDI_audio_frame.no_samples = frame.audio.no_samples;
-                NDI_audio_frame.channel_stride_in_bytes = sizeof(float) * frame.audio.no_samples;
-                NDI_audio_frame.p_data = (float*)malloc(sizeof(float) * frame.audio.no_samples * frame.audio.no_channels);
-                for (int ch_idx = 0; ch_idx < frame.audio.no_channels; ++ch_idx)
-                {
-                    juce::FloatVectorOperations::copy(NDI_audio_frame.p_data + ch_idx * frame.audio.no_samples,
-                        frame.audio.samples.getReadPointer(ch_idx),
-                        frame.audio.no_samples);
-                }
+                NdiAudioHelper::convertAudioFrame(NDI_audio_frame, frame.audio);
 
-                NDI_audio_frame.timecode = frame.audio.timecode;
-                NDI_audio_frame.timestamp = frame.audio.timestamp;
-
-                NDI_audio_frame.p_metadata = NULL;
-
+                // Send data
                 NDIlib_send_send_audio_v2(pNdiSender, &NDI_audio_frame);
 
                 // Free the data

@@ -25,7 +25,8 @@
       <FILE id="Fp8Kau" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
   </MAINGROUP>
-  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"
+               JUCE_USE_CAMERA="1"/>
   <EXPORTFORMATS>
     <VS2019 targetFolder="Builds/VisualStudio2019" externalLibraries="Processing.NDI.Lib.x64.lib">
       <CONFIGURATIONS>
@@ -35,19 +36,19 @@
                        libraryPath="$(NDI_SDK_DIR)\Lib\x64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_audio_basics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_core" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_data_structures" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_events" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_graphics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_video" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_core" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_extra" path="..\Dependencies\JUCE\modules"/>
+        <MODULEPATH id="juce_video" path="..\Dependencies\JUCE\modules"/>
       </MODULEPATHS>
     </VS2019>
     <XCODE_MAC targetFolder="Builds/MacOSX">
@@ -56,37 +57,37 @@
         <CONFIGURATION isDebug="0" name="Release" targetName="NdiSender" enablePluginBinaryCopyStep="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_audio_basics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_core" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_data_structures" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_events" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_graphics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
-        <MODULEPATH id="juce_video" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../Dependencies/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="../Dependencies/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
   <MODULES>
-    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
-            useGlobalPath="1"/>
-    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+            useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <LIVE_SETTINGS>
     <WINDOWS/>
