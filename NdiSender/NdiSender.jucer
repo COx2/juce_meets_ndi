@@ -3,7 +3,7 @@
 <JUCERPROJECT id="Nm0BoH" name="NdiSender" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" version="0.0.1" companyName="Shoegaze Systems"
               companyCopyright="Shoegaze Systems" companyWebsite="http://shoegaze-systems.com/"
-              pluginFormats="buildAU,buildStandalone,buildVST3" pluginCharacteristicsValue="pluginWantsMidiIn"
+              pluginFormats="buildStandalone,buildVST3" pluginCharacteristicsValue="pluginWantsMidiIn"
               jucerVersion="5.4.7">
   <MAINGROUP id="jeWWX7" name="NdiSender">
     <GROUP id="{1B941078-5D1A-2844-2A57-7803BA60FC85}" name="Source">
@@ -51,10 +51,12 @@
         <MODULEPATH id="juce_video" path="..\Dependencies\JUCE\modules"/>
       </MODULEPATHS>
     </VS2019>
-    <XCODE_MAC targetFolder="Builds/MacOSX">
+    <XCODE_MAC targetFolder="Builds/MacOSX" cameraPermissionNeeded="1" microphonePermissionNeeded="1">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NdiSender" enablePluginBinaryCopyStep="0"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NdiSender" enablePluginBinaryCopyStep="0"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NdiSender" enablePluginBinaryCopyStep="0"
+                       headerPath="/Library/NDI SDK for Apple/include" libraryPath="/Library/NDI SDK for Apple/lib/x64"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NdiSender" enablePluginBinaryCopyStep="0"
+                       headerPath="/Library/NDI SDK for Apple/include" libraryPath="/Library/NDI SDK for Apple/lib/x64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../Dependencies/JUCE/modules"/>
@@ -91,5 +93,6 @@
   </MODULES>
   <LIVE_SETTINGS>
     <WINDOWS/>
+    <OSX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>

@@ -3,7 +3,7 @@
 <JUCERPROJECT id="nQw8Vl" name="NdiReceiver" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" companyName="Shoegaze Systems"
               companyCopyright="Shoegaze Systems" companyWebsite="http://shoegaze-systems.com/"
-              pluginFormats="buildAU,buildStandalone,buildVST3" pluginCharacteristicsValue="pluginWantsMidiIn"
+              pluginFormats="buildStandalone,buildVST3" pluginCharacteristicsValue="pluginWantsMidiIn"
               jucerVersion="5.4.7" version="0.0.1">
   <MAINGROUP id="cK2Iy5" name="NdiReceiver">
     <GROUP id="{F7850812-7196-5473-9124-D547974DB718}" name="Source">
@@ -85,5 +85,6 @@
   </MODULES>
   <LIVE_SETTINGS>
     <WINDOWS/>
+    <OSX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>
