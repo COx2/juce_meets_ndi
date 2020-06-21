@@ -13,6 +13,10 @@
 #include "NdiVideoHelper.h"
 #include "NdiAudioHelper.h"
 
+#if JUCE_MAC
+#include <dlfcn.h>
+#endif
+
 //==============================================================================
 class NdiSendWrapper::Impl
 {
@@ -21,6 +25,56 @@ public:
     Impl()
         : uuid_dashed_str(uuid.toDashedString().toStdString())
     {
+#if JUCE_MAC
+        std::string ndi_path;
+        
+        // ToDo
+        const char* p_NDI_runtime_folder = ::getenv("NDI_RUNTIME_DIR_V4");
+        if (p_NDI_runtime_folder)
+        {
+            ndi_path = p_NDI_runtime_folder;
+            ndi_path += "/libndi.dylib";
+        }
+        else
+        {
+            ndi_path = "libndi.4.dylib"; // The standard versioning scheme on Linux based systems using sym links
+        }
+        
+        // Try to load the library
+        void *hNDILib = ::dlopen(ndi_path.c_str(), RTLD_LOCAL | RTLD_LAZY);
+        
+        // The main NDI entry point for dynamic loading if we got the library
+        const NDIlib_v4* (*funcPtr_NDIlib_v4_load)(void) = NULL;
+        if (hNDILib)
+        {
+            *((void**)&funcPtr_NDIlib_v4_load) = ::dlsym(hNDILib, "NDIlib_v4_load");
+        }
+        
+        if (!funcPtr_NDIlib_v4_load)
+        {
+            DBG("Please re-install the NewTek NDI Runtimes to use this application.");
+            return;
+        }
+        
+        // Lets get all of the DLL entry points
+        pNdiLib = funcPtr_NDIlib_v4_load();
+        
+        // We can now run as usual
+        if (!pNdiLib->NDIlib_initialize())
+        {    // Cannot run NDI. Most likely because the CPU is not sufficient (see SDK documentation).
+            // you can check this directly with a call to NDIlib_is_supported_CPU()
+            DBG("Cannot run NDI.");
+            return;
+        }
+        
+        // Create an NDI source that is called "My Video and Audio" and is clocked to the video.
+        ndiSendDesc.p_ndi_name = uuid_dashed_str.c_str();
+        ndiSendDesc.clock_audio = true;
+
+        // We create the NDI sender
+        pNdiSender = pNdiLib->NDIlib_send_create(&ndiSendDesc);
+        if (!pNdiSender) return;
+#else
         // Not required, but "correct" (see the SDK documentation.
         if (!NDIlib_initialize()) return;
 
@@ -31,15 +85,27 @@ public:
         // We create the NDI sender
         pNdiSender = NDIlib_send_create(&ndiSendDesc);
         if (!pNdiSender) return;
+#endif
     }
 
     ~Impl()
     {
+#if JUCE_MAC
+        if(pNdiLib)
+        {
+            // Destroy the NDI sender
+            pNdiLib->NDIlib_send_destroy(pNdiSender);
+
+            // Not required, but nice
+            pNdiLib->NDIlib_destroy();
+        }
+#else
         // Destroy the NDI sender
         NDIlib_send_destroy(pNdiSender);
 
         // Not required, but nice
         NDIlib_destroy();
+#endif
     }
 
     //==============================================================================
@@ -55,10 +121,16 @@ public:
                 // Create an video buffer
                 NDIlib_video_frame_v2_t NDI_video_frame;
                 NdiVideoHelper::convertVideoFrame(NDI_video_frame, frame.video);
-
+#if JUCE_MAC
+                if(pNdiLib)
+                {
+                    // Send data
+                    pNdiLib->NDIlib_send_send_video_v2(pNdiSender, &NDI_video_frame);
+                }
+#else
                 // Send data
                 NDIlib_send_send_video_v2(pNdiSender, &NDI_video_frame);
-
+#endif
                 // Free the data
                 free((void*)NDI_video_frame.p_data);
             }
@@ -71,9 +143,16 @@ public:
                 NDIlib_audio_frame_v2_t NDI_audio_frame;
                 NdiAudioHelper::convertAudioFrame(NDI_audio_frame, frame.audio);
 
+#if JUCE_MAC
+                if(pNdiLib)
+                {
+                    // Send data
+                    pNdiLib->NDIlib_send_send_audio_v2(pNdiSender, &NDI_audio_frame);
+                }
+#else
                 // Send data
                 NDIlib_send_send_audio_v2(pNdiSender, &NDI_audio_frame);
-
+#endif
                 // Free the data
                 free((void*)NDI_audio_frame.p_data);
             }
@@ -90,6 +169,7 @@ public:
     }
 
 private:
+    const NDIlib_v4* pNdiLib;
     NDIlib_find_instance_t pNdiFinder;
     NDIlib_send_instance_t pNdiSender;
     NDIlib_send_create_t ndiSendDesc;
