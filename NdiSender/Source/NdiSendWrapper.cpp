@@ -29,7 +29,7 @@ public:
         std::string ndi_path;
         
         // ToDo
-        const char* p_NDI_runtime_folder = ::getenv("NDI_RUNTIME_DIR_V4");
+        const char* p_NDI_runtime_folder = std::getenv("NDI_RUNTIME_DIR_V4");
         if (p_NDI_runtime_folder)
         {
             ndi_path = p_NDI_runtime_folder;
