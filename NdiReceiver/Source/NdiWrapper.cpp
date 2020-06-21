@@ -13,6 +13,10 @@
 #include "NdiVideoHelper.h"
 #include "NdiAudioHelper.h"
 
+#if JUCE_MAC
+#include <dlfcn.h>
+#endif
+
 //==============================================================================
 class NdiWrapper::Impl
 {
@@ -20,6 +24,56 @@ public:
     //==============================================================================
     Impl()
     {
+#if JUCE_MAC
+        std::string ndi_path;
+        
+        // ToDo
+        const char* p_NDI_runtime_folder = std::getenv("NDI_RUNTIME_DIR_V4");
+        if (p_NDI_runtime_folder)
+        {
+            ndi_path = p_NDI_runtime_folder;
+            ndi_path += "/libndi.dylib";
+        }
+        else
+        {
+            ndi_path = "libndi.4.dylib"; // The standard versioning scheme on Linux based systems using sym links
+        }
+        
+        // Try to load the library
+        void *hNDILib = ::dlopen(ndi_path.c_str(), RTLD_LOCAL | RTLD_LAZY);
+        
+        // The main NDI entry point for dynamic loading if we got the library
+        const NDIlib_v4* (*funcPtr_NDIlib_v4_load)(void) = NULL;
+        if (hNDILib)
+        {
+            *((void**)&funcPtr_NDIlib_v4_load) = ::dlsym(hNDILib, "NDIlib_v4_load");
+        }
+        
+        if (!funcPtr_NDIlib_v4_load)
+        {
+            DBG("Please re-install the NewTek NDI Runtimes to use this application.");
+            return;
+        }
+        
+        // Lets get all of the DLL entry points
+        pNdiLib = funcPtr_NDIlib_v4_load();
+        
+        // We can now run as usual
+        if (!pNdiLib->NDIlib_initialize())
+        {    // Cannot run NDI. Most likely because the CPU is not sufficient (see SDK documentation).
+            // you can check this directly with a call to NDIlib_is_supported_CPU()
+            DBG("Cannot run NDI.");
+            return;
+        }
+        
+        // Create a finder
+        pNdiFinder = pNdiLib->NDIlib_find_create_v2(NULL);
+        if (!pNdiFinder) return;
+        
+        // We now have at least one source, so we create a receiver to look at it.
+        pNdiReceiver = pNdiLib->NDIlib_recv_create_v3(NULL);
+        if (!pNdiReceiver) return;
+#else
         // Not required, but "correct" (see the SDK documentation.
         if (!NDIlib_initialize()) return;
 
@@ -30,10 +84,24 @@ public:
         // We now have at least one source, so we create a receiver to look at it.
         pNdiReceiver = NDIlib_recv_create_v3();
         if (!pNdiReceiver) return;
+#endif
     }
 
     ~Impl()
     {
+#if JUCE_MAC
+        if(pNdiLib)
+        {
+            // Destroy the receiver
+            pNdiLib->NDIlib_recv_destroy(pNdiReceiver);
+
+            // Destroy the NDI finder. We needed to have access to the pointers to p_sources[0]
+            pNdiLib->NDIlib_find_destroy(pNdiFinder);
+
+            // Not required, but nice
+            pNdiLib->NDIlib_destroy();
+        }
+#else
         // Destroy the receiver
         NDIlib_recv_destroy(pNdiReceiver);
 
@@ -42,6 +110,7 @@ public:
 
         // Not required, but nice
         NDIlib_destroy();
+#endif
     }
 
     //==============================================================================
@@ -49,11 +118,18 @@ public:
     {
         juce::Array<NdiWrapper::NdiSource> sources{};
 
+        
         // Wait until there is one source
         uint32_t num_sources = 0;
         DBG("Looking for sources ...\n");
+        
+#if JUCE_MAC
+        pNdiLib->NDIlib_find_wait_for_sources(pNdiFinder, 1000/* One second */);
+        pNdiSources = pNdiLib->NDIlib_find_get_current_sources(pNdiFinder, &num_sources);
+#else
         NDIlib_find_wait_for_sources(pNdiFinder, 1000/* One second */);
         pNdiSources = NDIlib_find_get_current_sources(pNdiFinder, &num_sources);
+#endif
 
         if (!num_sources)
         {
@@ -71,14 +147,24 @@ public:
 
     void connect(int sourceIndex) const
     {
+#if JUCE_MAC
+        // Connect to our sources
+        pNdiLib->NDIlib_recv_connect(pNdiReceiver, pNdiSources + sourceIndex);
+#else
         // Connect to our sources
         NDIlib_recv_connect(pNdiReceiver, pNdiSources + sourceIndex);
+#endif
     }
 
     void disconnect() const
     {
+#if JUCE_MAC
+        // Disconnect with NULL source
+        pNdiLib->NDIlib_recv_connect(pNdiReceiver, NULL);
+#else
         // Disconnect with NULL source
         NDIlib_recv_connect(pNdiReceiver, NULL);
+#endif
     }
 
     NdiWrapper::NdiFrame getFrame()
@@ -90,8 +176,12 @@ public:
         // The descriptors
         NDIlib_video_frame_v2_t video_frame;
         NDIlib_audio_frame_v2_t audio_frame;
-
-        switch (NDIlib_recv_capture_v2(pNdiReceiver, &video_frame, &audio_frame, nullptr, timeOutMsec))
+#if JUCE_MAC
+        auto frame_type = pNdiLib->NDIlib_recv_capture_v2(pNdiReceiver, &video_frame, &audio_frame, nullptr, timeOutMsec);
+#else
+        auto frame_type = NDIlib_recv_capture_v2(pNdiReceiver, &video_frame, &audio_frame, nullptr, timeOutMsec);
+#endif
+        switch (frame_type)
         {   // No data
         case NDIlib_frame_type_e::NDIlib_frame_type_none:
             //DBG("No data received.");
@@ -103,7 +193,11 @@ public:
             //DBG("Video data received (" << video_frame.xres << "x" << video_frame.yres <<" ).");
             result_frame.type = NdiFrameType::kVideo;
             NdiVideoHelper::convertVideoFrame(result_frame.video, video_frame);
+#if JUCE_MAC
+            pNdiLib->NDIlib_recv_free_video_v2(pNdiReceiver, &video_frame);
+#else
             NDIlib_recv_free_video_v2(pNdiReceiver, &video_frame);
+#endif
             break;
 
             // Audio data
@@ -111,7 +205,11 @@ public:
             //DBG("Audio data received (" << audio_frame.no_samples <<" samples).");
             result_frame.type = NdiFrameType::kAudio;
             NdiAudioHelper::convertAudioFrame(result_frame.audio, audio_frame);
+#if JUCE_MAC
+            pNdiLib->NDIlib_recv_free_audio_v2(pNdiReceiver, &audio_frame);
+#else
             NDIlib_recv_free_audio_v2(pNdiReceiver, &audio_frame);
+#endif
             break;
 
         case NDIlib_frame_type_e::NDIlib_frame_type_error:
@@ -130,6 +228,7 @@ public:
     }
 
 private:
+    const NDIlib_v4* pNdiLib;
     NDIlib_find_instance_t pNdiFinder;
     NDIlib_recv_instance_t pNdiReceiver;
     const NDIlib_source_t* pNdiSources;

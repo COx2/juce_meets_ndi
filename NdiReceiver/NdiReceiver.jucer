@@ -49,8 +49,10 @@
     </VS2019>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NdiReceiver" enablePluginBinaryCopyStep="0"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NdiReceiver" enablePluginBinaryCopyStep="0"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NdiReceiver" enablePluginBinaryCopyStep="0"
+                       headerPath="/Library/NDI SDK for Apple/include" libraryPath="/Library/NDI SDK for Apple/lib/x64"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NdiReceiver" enablePluginBinaryCopyStep="0"
+                       headerPath="/Library/NDI SDK for Apple/include" libraryPath="/Library/NDI SDK for Apple/lib/x64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="C:/SDKs/ROLI/JUCE_latest/modules"/>
