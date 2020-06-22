@@ -40,13 +40,20 @@ public:
         }
         
         // Try to load the library
-        void *hNDILib = ::dlopen(ndi_path.c_str(), RTLD_LOCAL | RTLD_LAZY);
+        void* handle_ndi_lib = ::dlopen(ndi_path.c_str(), RTLD_LOCAL | RTLD_LAZY);
+        
+        // If handle is NULL, Re-try to load the library by absolute path.
+        if(!handle_ndi_lib)
+        {
+            ndi_path = "/usr/local/lib/libndi.4.dylib";
+            handle_ndi_lib = ::dlopen(ndi_path.c_str(), RTLD_LOCAL | RTLD_LAZY);
+        }
         
         // The main NDI entry point for dynamic loading if we got the library
         const NDIlib_v4* (*funcPtr_NDIlib_v4_load)(void) = NULL;
-        if (hNDILib)
+        if (handle_ndi_lib)
         {
-            *((void**)&funcPtr_NDIlib_v4_load) = ::dlsym(hNDILib, "NDIlib_v4_load");
+            *((void**)&funcPtr_NDIlib_v4_load) = ::dlsym(handle_ndi_lib, "NDIlib_v4_load");
         }
         
         if (!funcPtr_NDIlib_v4_load)
@@ -118,14 +125,13 @@ public:
     {
         juce::Array<NdiWrapper::NdiSource> sources{};
 
-        
         // Wait until there is one source
         uint32_t num_sources = 0;
         DBG("Looking for sources ...\n");
         
 #if JUCE_MAC
-        pNdiLib->NDIlib_find_wait_for_sources(pNdiFinder, 1000/* One second */);
-        pNdiSources = pNdiLib->NDIlib_find_get_current_sources(pNdiFinder, &num_sources);
+        if(pNdiLib) pNdiLib->NDIlib_find_wait_for_sources(pNdiFinder, 1000/* One second */);
+        if(pNdiLib) pNdiSources = pNdiLib->NDIlib_find_get_current_sources(pNdiFinder, &num_sources);
 #else
         NDIlib_find_wait_for_sources(pNdiFinder, 1000/* One second */);
         pNdiSources = NDIlib_find_get_current_sources(pNdiFinder, &num_sources);
@@ -149,7 +155,7 @@ public:
     {
 #if JUCE_MAC
         // Connect to our sources
-        pNdiLib->NDIlib_recv_connect(pNdiReceiver, pNdiSources + sourceIndex);
+        if(pNdiLib) pNdiLib->NDIlib_recv_connect(pNdiReceiver, pNdiSources + sourceIndex);
 #else
         // Connect to our sources
         NDIlib_recv_connect(pNdiReceiver, pNdiSources + sourceIndex);
@@ -160,7 +166,7 @@ public:
     {
 #if JUCE_MAC
         // Disconnect with NULL source
-        pNdiLib->NDIlib_recv_connect(pNdiReceiver, NULL);
+        if(pNdiLib) pNdiLib->NDIlib_recv_connect(pNdiReceiver, NULL);
 #else
         // Disconnect with NULL source
         NDIlib_recv_connect(pNdiReceiver, NULL);
@@ -176,10 +182,11 @@ public:
         // The descriptors
         NDIlib_video_frame_v2_t video_frame;
         NDIlib_audio_frame_v2_t audio_frame;
+        NDIlib_frame_type_e frame_type = NDIlib_frame_type_e::NDIlib_frame_type_none;
 #if JUCE_MAC
-        auto frame_type = pNdiLib->NDIlib_recv_capture_v2(pNdiReceiver, &video_frame, &audio_frame, nullptr, timeOutMsec);
+        if(pNdiLib) frame_type = pNdiLib->NDIlib_recv_capture_v2(pNdiReceiver, &video_frame, &audio_frame, nullptr, timeOutMsec);
 #else
-        auto frame_type = NDIlib_recv_capture_v2(pNdiReceiver, &video_frame, &audio_frame, nullptr, timeOutMsec);
+        frame_type = NDIlib_recv_capture_v2(pNdiReceiver, &video_frame, &audio_frame, nullptr, timeOutMsec);
 #endif
         switch (frame_type)
         {   // No data
@@ -194,7 +201,7 @@ public:
             result_frame.type = NdiFrameType::kVideo;
             NdiVideoHelper::convertVideoFrame(result_frame.video, video_frame);
 #if JUCE_MAC
-            pNdiLib->NDIlib_recv_free_video_v2(pNdiReceiver, &video_frame);
+            if(pNdiLib) pNdiLib->NDIlib_recv_free_video_v2(pNdiReceiver, &video_frame);
 #else
             NDIlib_recv_free_video_v2(pNdiReceiver, &video_frame);
 #endif
@@ -206,7 +213,7 @@ public:
             result_frame.type = NdiFrameType::kAudio;
             NdiAudioHelper::convertAudioFrame(result_frame.audio, audio_frame);
 #if JUCE_MAC
-            pNdiLib->NDIlib_recv_free_audio_v2(pNdiReceiver, &audio_frame);
+            if(pNdiLib) pNdiLib->NDIlib_recv_free_audio_v2(pNdiReceiver, &audio_frame);
 #else
             NDIlib_recv_free_audio_v2(pNdiReceiver, &audio_frame);
 #endif
