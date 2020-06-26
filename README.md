@@ -19,6 +19,7 @@ Please note that in order to use the NDI SDK, you must agree to the NDI SDK lice
 $ git clone https://github.com/COx2/juce_meets_ndi.git
 $ git submodule update --init --recursive
 $ .\NdiSender\build_msvc2019.bat
+$ .\NdiReceiver\build_msvc2019.bat
 ```
 
 ### macOS
@@ -27,6 +28,7 @@ $ .\NdiSender\build_msvc2019.bat
 $ git clone https://github.com/COx2/juce_meets_ndi.git
 $ git submodule update --init --recursive
 $ ./NdiSender/build_xcode.command
+$ ./NdiReceiver/build_xcode.command
 ```
 
 ## Install instructions
