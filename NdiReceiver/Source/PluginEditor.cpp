@@ -91,10 +91,17 @@ NdiReceiverAudioProcessorEditor::NdiReceiverAudioProcessorEditor (NdiReceiverAud
     setSize(820, 600);
 
     startTimerHz(120);
+
+#ifdef JUCE_OPENGL
+    openGLContext.attachTo(*getTopLevelComponent());
+#endif // JUCE_OPENGL
 }
 
 NdiReceiverAudioProcessorEditor::~NdiReceiverAudioProcessorEditor()
 {
+#ifdef JUCE_OPENGL
+    openGLContext.detach();
+#endif // JUCE_OPENGL
 }
 
 //==============================================================================

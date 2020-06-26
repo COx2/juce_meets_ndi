@@ -24,10 +24,17 @@ NdiSenderAudioProcessorEditor::NdiSenderAudioProcessorEditor (NdiSenderAudioProc
     setSize (820, 600);
 
     startTimerHz(120);
+
+#ifdef JUCE_OPENGL
+    openGLContext.attachTo(*getTopLevelComponent());
+#endif // JUCE_OPENGL
 }
 
 NdiSenderAudioProcessorEditor::~NdiSenderAudioProcessorEditor()
 {
+#ifdef JUCE_OPENGL
+    openGLContext.detach();
+#endif // JUCE_OPENGL
 }
 
 //==============================================================================

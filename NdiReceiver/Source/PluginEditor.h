@@ -44,5 +44,9 @@ private:
     juce::Image currentImage;
     int timeupCounter{ 0 };
 
+#ifdef JUCE_OPENGL
+    juce::OpenGLContext openGLContext;
+#endif //  JUCE_OPENGL
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NdiReceiverAudioProcessorEditor)
 };
