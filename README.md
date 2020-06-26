@@ -1,6 +1,7 @@
 # juce_meets_ndi
  
 This project is an example of integrating NewTek™ NDI with the JUCE framework.
+
 Under the power of the JUCE framework, this software can be built as a VST3 plugin.
 
 This project offers a few key features:  
@@ -11,6 +12,7 @@ This project offers a few key features:
 
 In advance, download the NDI SDK from NewTek's official website here: https://www.ndi.tv/sdk/
 And, execute install for your build environment.
+
 Please note that in order to use the NDI SDK, you must agree to the NDI SDK license agreement.
 
 ### Windows
@@ -36,6 +38,7 @@ $ ./NdiReceiver/build_xcode.command
 ### Windows
 
 Install the NDI V4 Windows runtime using the installer provided here: http://new.tk/NDIRedistV4
+
 On Windows, you must reboot your computer to make a new or updated NDI Runtime installation effective
 
 ### macOS
@@ -58,6 +61,7 @@ Version 0.0.1 (2020-06-26) - For proof of concept
 ## Credits
 
 Company name - Shoegaze Systems
+
 Developer - Tatsuya Shiozawa (@COx2)
  
 ## License
