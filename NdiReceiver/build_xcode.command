@@ -50,9 +50,9 @@ xcodebuild -project "${SCRIPT_DIRECTORY}/Builds/${EXPORTER_NAME}/${SOLUTION_NAME
 echo '--- Rename to adding version number for VST3 file --'
 SRC_FILE=${SCRIPT_DIRECTORY}/Builds/${EXPORTER_NAME}/build/${BUILD_CONFIG}/${SOLUTION_NAME}.vst3
 DEST_FILE=${SCRIPT_DIRECTORY}/Builds/${EXPORTER_NAME}/build/${BUILD_CONFIG}/${SOLUTION_NAME}-${VERSION_NUMBER}.vst3
-if test -e `${DEST_FILE}`; then
+if test -e "${DEST_FILE}"; then
     rm -rf ${DEST_FILE}
 fi
-if test -e `${SRC_FILE}`; then
+if test -e "${SRC_FILE}"; then
     mv -f ${SRC_FILE} ${DEST_FILE}
 fi
