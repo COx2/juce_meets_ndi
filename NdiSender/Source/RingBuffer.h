@@ -38,9 +38,10 @@ public:
         {
             for(int ch_idx = 0; ch_idx < min_ch_idx; ++ch_idx)
             {
-                juce::FloatVectorOperations::copy(internalBuffer.getWritePointer(ch_idx) + start1
-                    , inputBuffer.getReadPointer(ch_idx)
-                    , size1);
+                juce::FloatVectorOperations::copy(
+                    internalBuffer.getWritePointer(ch_idx) + start1,
+                    inputBuffer.getReadPointer(ch_idx),
+                    size1);
             }
         }
 
@@ -48,9 +49,10 @@ public:
         {
             for (int ch_idx = 0; ch_idx < min_ch_idx; ++ch_idx)
             {
-                juce::FloatVectorOperations::copy(internalBuffer.getWritePointer(ch_idx) + start2
-                    , inputBuffer.getReadPointer(ch_idx)
-                    , size2);
+                juce::FloatVectorOperations::copy(
+                    internalBuffer.getWritePointer(ch_idx) + start2,
+                    inputBuffer.getReadPointer(ch_idx) + size1,
+                    size2);
             }
         }
 
@@ -69,9 +71,10 @@ public:
         {
             for (int ch_idx = 0; ch_idx < min_ch_idx; ++ch_idx)
             {
-                juce::FloatVectorOperations::copy(outputBuffer.getWritePointer(ch_idx)
-                    , internalBuffer.getReadPointer(ch_idx) + start1
-                    , size1);
+                juce::FloatVectorOperations::copy(
+                    outputBuffer.getWritePointer(ch_idx),
+                    internalBuffer.getReadPointer(ch_idx) + start1,
+                    size1);
             }
         }
 
@@ -79,9 +82,10 @@ public:
         {
             for (int ch_idx = 0; ch_idx < min_ch_idx; ++ch_idx)
             {
-                juce::FloatVectorOperations::copy(outputBuffer.getWritePointer(ch_idx)
-                    , internalBuffer.getReadPointer(ch_idx) + start2
-                    , size2);
+                juce::FloatVectorOperations::copy(
+                    outputBuffer.getWritePointer(ch_idx) + size1,
+                    internalBuffer.getReadPointer(ch_idx) + start2,
+                    size2);
             }
         }
 
